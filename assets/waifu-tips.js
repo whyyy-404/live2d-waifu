@@ -98,7 +98,7 @@ live2d_settings['waifuEdgeSide']        = 'right:0';    // 看板娘贴边方向
 live2d_settings['waifuDraggable']       = 'axis-x';     // 'axis-x' | 'disable'
 live2d_settings['waifuDraggableRevert'] = true;         // 松手是否吸附到边缘
 live2d_settings['waifuDraggableSave']   = true;         // 是否记住停靠在哪一边
-live2d_settings['waifuDraggableSnap']   = 300;          // 吸附动画时长（毫秒），与 1.0.3 的 revertDuration 一致
+live2d_settings['waifuDraggableSnap']   = 1000;         // 吸附动画时长（毫秒），与 1.0.3 一致（它用的是 1000ms + easeOutCubic）
 
 // 隐藏模式（点工具栏的眼睛图标）
 //   行为：鼠标悬停在模型上时模型隐藏，移开恢复；工具栏全程可见可点。
@@ -362,18 +362,19 @@ function setWaifuLeft(px, animate) {
 /**
  * 带动画地把看板娘移动到目标位置。
  *
- * 时长固定（默认 300ms，与 1.0.3 脚本的 revertDuration 一致），
- * 不管拖多远都用同一个节奏，行为可预测。
+ * 时长与缓动都对齐 1.0.3 脚本：
+ *   · 时长 1000ms
+ *   · 缓动 easeOutCubic = 1-(1-t)³ ≈ cubic-bezier(0.33, 1, 0.68, 1)
  *
  * @param {number} targetLeft 目标 left（px）
- * @param {number} duration   动画时长（毫秒），默认 300
+ * @param {number} duration   动画时长（毫秒），默认 1000
  * @param {function} onDone   动画结束回调
  */
 function animateWaifuTo(targetLeft, duration, onDone) {
     var el = document.querySelector('.waifu');
     if (!el) return;
 
-    var ms = (typeof duration === 'number' && duration > 0) ? duration : 300;
+    var ms = (typeof duration === 'number' && duration > 0) ? duration : 1000;
 
     // 用 CSS transition 而不是 requestAnimationFrame：
     // 更省 CPU，而且和样式表里的 transition 保持一致
@@ -548,7 +549,7 @@ function initDraggable() {
         setWaifuLeft(finalLeft, false);
 
         // ② 只对水平做吸附动画；垂直保持不变
-        animateWaifuTo(snapLeft, live2d_settings.waifuDraggableSnap || 300, function () {
+        animateWaifuTo(snapLeft, live2d_settings.waifuDraggableSnap || 1000, function () {
             applyDockSide(finalSide);
         });
         applyDockSide(finalSide);
