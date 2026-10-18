@@ -240,6 +240,54 @@ function storageSet(key, value) {
     getStorage().save(STORAGE_PREFIX + key, String(value));
 }
 
+/**
+ * 读取某个角色记住的皮肤编号。
+ *
+ * ⚠️ 皮肤必须【按角色分开存】。
+ *    以前只存一个全局 modelTexturesId，换角色时会被新角色的皮肤覆盖，
+ *    表现就是「给 Pio 挑了第 5 套衣服，换一圈角色回来又变回原皮」。
+ *
+ *    现在每个角色一个独立键：<前缀>textures_<角色id>，互不影响。
+ *
+ * @param {number} modelId 角色 id
+ * @returns {number} 皮肤编号；没记录过则 0（原皮）
+ */
+function storageGetModelTextures(modelId) {
+    var mid = parseInt(modelId, 10) || 1;
+    var v = storageGet('textures_' + mid);
+    var n = parseInt(v, 10);
+    return (isNaN(n) || n < 0) ? 0 : n;
+}
+
+/** 记住某个角色穿的皮肤编号 */
+function storageSetModelTextures(modelId, texturesId) {
+    var mid = parseInt(modelId, 10) || 1;
+    var tid = parseInt(texturesId, 10) || 0;
+    storageSet('textures_' + mid, tid);
+}
+
+/**
+ * 旧数据迁移：把历史上那个「单一皮肤值」认领给当前角色。
+ *
+ * 只在「这个角色还没单独记过皮肤」时执行，不会覆盖已迁移的数据。
+ * 其他角色的历史无法恢复（当初就被覆盖掉了），只能从原皮开始。
+ */
+function migrateModelTextures(currentModelId) {
+    var mid = parseInt(currentModelId, 10) || 1;
+    if (storageGet('textures_' + mid) !== null) return;   // 已经迁移过
+
+    var old = storageGet('modelTexturesId');
+    if (old === null || old === '' || old === undefined) return;
+
+    var n = parseInt(old, 10);
+    if (isNaN(n) || n <= 0) return;
+
+    storageSetModelTextures(mid, n);
+    if (live2d_settings.showF12Status) {
+        console.log('[Storage] 已迁移皮肤记录: 角色', mid, '→ 第', n, '套');
+    }
+}
+
 function showMessage(text, timeout, flag) {
     if(flag || sessionStorage.getItem('waifu-text') === '' || sessionStorage.getItem('waifu-text') === null){
         if(Array.isArray(text)) text = text[Math.floor(Math.random() * text.length + 1)-1];
@@ -781,27 +829,56 @@ function initModel(waifuPath, type) {
 
     if (waifuPath === undefined) waifuPath = '';
 
-    // 读取上次的选择（用存储模块，带前缀与旧键迁移）
-    var modelId = storageGet('modelId');
-    var modelTexturesId = storageGet('modelTexturesId');
+    // 读取上次选择的角色（storage 模块自带前缀与旧键迁移）
+    var savedModelId = storageGet('modelId');
+    var useStorage = live2d_settings.modelStorage && savedModelId != null;
 
-    if (!live2d_settings.modelStorage || modelId == null) {
-        var modelId = live2d_settings.modelId;
-        var modelTexturesId = live2d_settings.modelTexturesId;
-    } loadModel(modelId, modelTexturesId);
+    if (!useStorage) {
+        // 首次访问 / 关掉了记忆 → 用配置里的初始值
+        loadModel(live2d_settings.modelId, live2d_settings.modelTexturesId);
+    } else {
+        // 有记忆 → 先把历史遗留的「单一皮肤值」认领给当前角色，
+        // 然后【不传皮肤】，让 loadModel 自己去读这个角色记住的那套。
+        // ⚠️ 不能在这里传 storageGet('modelTexturesId')：
+        //    那是个全局值，换角色时会被覆盖，正是「切回来变原皮」的根源。
+        migrateModelTextures(savedModelId);
+        loadModel(savedModelId);
+    }
 }
 
-function loadModel(modelId, modelTexturesId=0) {
+/**
+ * 加载模型。
+ *
+ * @param {number} modelId        角色 id
+ * @param {number} [modelTexturesId] 皮肤编号。
+ *        ⚠️ 不传时会自动读取「这个角色自己记住的皮肤」。
+ *           loadOtherModel() 就是靠这个行为实现「切回 Pio 还是第 5 套」。
+ *           传了则以传入值为准（换皮肤时用）。
+ */
+function loadModel(modelId, modelTexturesId) {
+    var mid = parseInt(modelId, 10) || 1;
+    var tid;
+
+    if (modelTexturesId === undefined || modelTexturesId === null) {
+        // 没指定皮肤 → 用这个角色上次穿的那套
+        tid = storageGetModelTextures(mid);
+    } else {
+        tid = parseInt(modelTexturesId, 10) || 0;
+    }
+
     // 记录「当前正在显示」的模型 / 贴图。
     // ⚠️ 这个内存变量是必须的：换角色 / 换皮肤时要从「当前值」算出「下一个」，
     //    不能依赖存储 —— 因为 modelStorage=false 时根本不会写存储，
     //    而原版在这种情况下会读到 null，导致 ?id=undefined，切换逻辑彻底失效
     //    （表现：只能在最初的一两个模型之间打转）。
-    currentModel = { id: parseInt(modelId, 10) || 1, texturesId: parseInt(modelTexturesId, 10) || 0 };
+    currentModel = { id: mid, texturesId: tid };
 
     if (live2d_settings.modelStorage) {
         // 记住选择（storage 模块会自动加前缀，并处理隐私模式等异常）
         storageSet('modelId', currentModel.id);
+        // 皮肤按角色分开存，互不覆盖
+        storageSetModelTextures(currentModel.id, currentModel.texturesId);
+        // 同时写一份「当前值」，兼容老版本读取方 & 作为迁移来源
         storageSet('modelTexturesId', currentModel.texturesId);
     }
     loadlive2d('live2d', live2d_settings.modelAPI+'get/?id='+currentModel.id+'-'+currentModel.texturesId, (live2d_settings.showF12Status ? console.log('[Status]','live2d','模型',currentModel.id+'-'+currentModel.texturesId,'加载完成'):null));

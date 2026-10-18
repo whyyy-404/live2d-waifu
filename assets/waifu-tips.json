@@ -1,102 +1,514 @@
 {
-    "waifu": {
-        "console_open_msg": ["哈哈，你打开了控制台，是想要看看我的秘密吗？"],
-        "copy_message": ["你都复制了些什么呀，转载要记得加上出处哦"],
-        "screenshot_message": ["照好了嘛，是不是很可爱呢？"],
-        "hidden_message": ["我们还能再见面的吧…"],
-        "load_rand_textures": ["我还没有其他衣服呢", "我的新衣服好看嘛"],
-        "hour_tips": {
-            "t5-7": ["早上好！一日之计在于晨，美好的一天就要开始了"],
-            "t7-11": ["上午好！工作顺利嘛，不要久坐，多起来走动走动哦！"],
-            "t11-14": ["中午了，工作了一个上午，现在是午餐时间！"],
-            "t14-17": ["午后很容易犯困呢，今天的运动目标完成了吗？"],
-            "t17-19": ["傍晚了！窗外夕阳的景色很美丽呢，最美不过夕阳红~"],
-            "t19-21": ["晚上好，今天过得怎么样？"],
-            "t21-23": ["已经这么晚了呀，早点休息吧，晚安~"],
-            "t23-5": ["你是夜猫子呀？这么晚还不睡觉，明天起的来嘛"],
-            "default": ["嗨~ 快来逗我玩吧！"]
-        },
-        "referrer_message": {
-            "localhost": ["欢迎阅读<span style=\"color:#0099cc;\">『", "』</span>", " - "],
-            "baidu": ["Hello! 来自 百度搜索 的朋友<br>你是搜索 <span style=\"color:#0099cc;\">", "</span> 找到的我吗？"],
-            "so": ["Hello! 来自 360搜索 的朋友<br>你是搜索 <span style=\"color:#0099cc;\">", "</span> 找到的我吗？"],
-            "google": ["Hello! 来自 谷歌搜索 的朋友<br>欢迎阅读<span style=\"color:#0099cc;\">『", "』</span>", " - "],
-            "default": ["Hello! 来自 <span style=\"color:#0099cc;\">", "</span> 的朋友"],
-            "none": ["欢迎阅读<span style=\"color:#0099cc;\">『", "』</span>", " - "]
-        },
-        "referrer_hostname": {
-            "example.com": ["示例网站"],
-            "www.fghrsh.net": ["FGHRSH 的博客"]
-        },
-        "model_message": {
-            "1": ["来自 Potion Maker 的 Pio 酱 ~"],
-            "2": ["来自 Potion Maker 的 Tia 酱 ~"]  
-        },
-        "hitokoto_api_message": {
-            "lwl12.com": ["这句一言来自 <span style=\"color:#0099cc;\">『{source}』</span>", "，是 <span style=\"color:#0099cc;\">{creator}</span> 投稿的", "。"],
-            "fghrsh.net": ["这句一言出处是 <span style=\"color:#0099cc;\">『{source}』</span>，是 <span style=\"color:#0099cc;\">FGHRSH</span> 在 {date} 收藏的！"],
-            "jinrishici.com": ["这句诗词出自 <span style=\"color:#0099cc;\">《{title}》</span>，是 {dynasty}诗人 {author} 创作的！"],
-            "hitokoto.cn": ["这句一言来自 <span style=\"color:#0099cc;\">『{source}』</span>，是 <span style=\"color:#0099cc;\">{creator}</span> 在 hitokoto.cn 投稿的。"]
-        }
+  "waifu": {
+    "console_open_msg": [
+      "哈哈，你打开了控制台，是想要看看我的秘密吗？",
+      "偷偷看一眼代码…你是不是也想养一只看板娘？",
+      "发现你了！在控制台里偷偷看我~"
+    ],
+    "copy_message": [
+      "你都复制了些什么呀，转载要记得加上出处哦",
+      "复制成功！记得标注来源呀~",
+      "抄作业要注明出处哦，不然我会生气的"
+    ],
+    "screenshot_message": [
+      "照好了嘛，是不是很可爱呢？",
+      "咔嚓！记得把我存好呀~",
+      "这张我笑得很自然吧？"
+    ],
+    "hidden_message": [
+      "我们还能再见面的吧…",
+      "那我先退下啦，需要我时再来叫我~",
+      "拜拜~ 别忘了我哦"
+    ],
+    "load_rand_textures": [
+      "我还没有其他衣服呢，可怜可怜我吧",
+      "我的新衣服好看嘛~",
+      "换好衣服啦！转一圈给你看看",
+      "这件怎么样？我可是挑了好久呢"
+    ],
+
+    "hour_tips": {
+      "t5-7": [
+        "早上好！一日之计在于晨，美好的一天就要开始了",
+        "这么早就起来啦？先喝杯温水醒醒神吧~",
+        "早安！晨光正好，是新的一天呢"
+      ],
+      "t7-11": [
+        "上午好！工作顺利嘛，不要久坐，多起来走动走动哦！",
+        "上午的时间最宝贵，专注的时候也要记得喝水呀",
+        "早上好~ 今天有什么计划吗？"
+      ],
+      "t11-14": [
+        "中午了，工作了一个上午，现在是午餐时间！",
+        "该吃午饭啦！不要边看电脑边吃哦",
+        "中午好~ 吃饱了才有力气干活呀"
+      ],
+      "t14-17": [
+        "午后很容易犯困呢，今天的运动目标完成了吗？",
+        "下午茶时间~ 要不要起来走走？",
+        "这个点最容易犯困了，揉揉眼睛吧"
+      ],
+      "t17-19": [
+        "傍晚了！窗外夕阳的景色很美丽呢，最美不过夕阳红~",
+        "下班时间到了吧？记得收拾一下桌面",
+        "天色暗了呢，注意休息眼睛"
+      ],
+      "t19-21": [
+        "晚上好，今天过得怎么样？",
+        "忙了一天辛苦啦，给自己放松一下吧",
+        "晚上的时间属于你自己，好好享受~"
+      ],
+      "t21-23": [
+        "已经这么晚了呀，早点休息吧，晚安~",
+        "该收尾啦，别熬夜太久哦",
+        "夜深了，屏幕调暗一点保护眼睛"
+      ],
+      "t23-5": [
+        "你是夜猫子呀？这么晚还不睡觉，明天起的来嘛",
+        "这个点了还不睡？明天会很难受的哦…",
+        "熬夜一时爽，第二天真的要命，快去睡吧"
+      ],
+      "default": [
+        "嗨~ 快来逗我玩吧！",
+        "有什么想说的吗？我在这儿呢",
+        "今天也是安静地陪着你的一天~"
+      ]
     },
-    "mouseover": [
-        { "selector": ".container a[href^='http']", "text": ["要看看 <span style=\"color:#0099cc;\">{text}</span> 么？"] },
-        { "selector": ".el-icon-house", "text": ["点击前往首页，想回到上一页可以使用浏览器的后退功能哦"] },
-        { "selector": ".el-icon-chat-dot-round", "text": ["一言一语，一颦一笑。一字一句，一颗赛艇。"] },
-        { "selector": ".el-icon-user", "text": ["嗯··· 要切换 看板娘 吗？"] },
-        { "selector": ".el-icon-magic-stick", "text": ["喜欢换装 Play 吗？"] },
-        { "selector": ".el-icon-camera", "text": ["要拍张纪念照片吗？"] },
-        { "selector": ".el-icon-view", "text": ["想让我躲起来吗？", "点这里可以把我藏起来哦"] },
-        { "selector": ".el-icon-discover", "text": ["这里有关于我的信息呢"] },
-        { "selector": ".el-icon-switch-button", "text": ["你不喜欢我了吗..."] },
-        { "selector": "#tor_show", "text": ["翻页比较麻烦吗，点击可以显示这篇文章的目录呢"] },
-        { "selector": "#comment_go", "text": ["想要去评论些什么吗？"] },
-        { "selector": "#night_mode", "text": ["深夜时要爱护眼睛呀"] },
-        { "selector": "#qrcode", "text": ["手机扫一下就能继续看，很方便呢"] },
-        { "selector": ".comment_reply", "text": ["要吐槽些什么呢"] },
-        { "selector": "#back-to-top", "text": ["回到开始的地方吧"] },
-        { "selector": "#author", "text": ["该怎么称呼你呢"] },
-        { "selector": "#mail", "text": ["留下你的邮箱，不然就是无头像人士了"] },
-        { "selector": "#url", "text": ["你的家在哪里呢，好让我去参观参观"] },
-        { "selector": "#textarea", "text": ["认真填写哦，垃圾评论是禁止事项"] },
-        { "selector": ".OwO-logo", "text": ["要插入一个表情吗"] },
-        { "selector": "#csubmit", "text": ["要[提交]^(Commit)了吗，首次评论需要审核，请耐心等待~"] },
-        { "selector": ".ImageBox", "text": ["点击图片可以放大呢"] },
-        { "selector": "input[name=s]", "text": ["找不到想看的内容？搜索看看吧"] },
-        { "selector": ".previous", "text": ["去上一页看看吧"] },
-        { "selector": ".next", "text": ["去下一页看看吧"] },
-        { "selector": ".dropdown-toggle", "text": ["这里是菜单"] },
-        { "selector": "c-player a.play-icon", "text": ["想要听点音乐吗"] },
-        { "selector": "c-player div.time", "text": ["在这里可以调整<span style=\"color:#0099cc;\">播放进度</span>呢"] },
-        { "selector": "c-player div.volume", "text": ["在这里可以调整<span style=\"color:#0099cc;\">音量</span>呢"] },
-        { "selector": "c-player div.list-button", "text": ["<span style=\"color:#0099cc;\">播放列表</span>里都有什么呢"] },
-        { "selector": "c-player div.lyric-button", "text": ["有<span style=\"color:#0099cc;\">歌词</span>的话就能跟着一起唱呢"] },
-        { "selector": ".waifu #live2d", "text": ["干嘛呢你，快把手拿开", "鼠…鼠标放错地方了！"] }
-    ],
-    "click": [
-        {
-            "selector": ".waifu #live2d",
-            "text": [
-                "是…是不小心碰到了吧",
-                "萝莉控是什么呀",
-                "你看到我的小熊了吗",
-                "再摸的话我可要报警了！⌇●﹏●⌇",
-                "110吗，这里有个变态一直在摸我(ó﹏ò｡)"
-            ]
-        }
-    ],
-    "seasons": [
-        { "date": "01/01", "text": ["<span style=\"color:#0099cc;\">元旦</span>了呢，新的一年又开始了，今年是{year}年~"] },
-        { "date": "02/14", "text": ["又是一年<span style=\"color:#0099cc;\">情人节</span>，{year}年找到对象了嘛~"] },
-        { "date": "03/08", "text": ["今天是<span style=\"color:#0099cc;\">妇女节</span>！"] },
-        { "date": "03/12", "text": ["今天是<span style=\"color:#0099cc;\">植树节</span>，要保护环境呀"] },
-        { "date": "04/01", "text": ["悄悄告诉你一个秘密~<span style=\"background-color:#34495e;\">今天是愚人节，不要被骗了哦~</span>"] },
-        { "date": "05/01", "text": ["今天是<span style=\"color:#0099cc;\">五一劳动节</span>，计划好假期去哪里了吗~"] },
-        { "date": "06/01", "text": ["<span style=\"color:#0099cc;\">儿童节</span>了呢，快活的时光总是短暂，要是永远长不大该多好啊…"] },
-        { "date": "09/03", "text": ["<span style=\"color:#0099cc;\">中国人民抗日战争胜利纪念日</span>，铭记历史、缅怀先烈、珍爱和平、开创未来。"] },
-        { "date": "09/10", "text": ["<span style=\"color:#0099cc;\">教师节</span>，在学校要给老师问声好呀~"] },
-        { "date": "10/01", "text": ["<span style=\"color:#0099cc;\">国庆节</span>，新中国已经成立69年了呢"] },
-        { "date": "11/05-11/12", "text": ["今年的<span style=\"color:#0099cc;\">双十一</span>是和谁一起过的呢~"] },
-        { "date": "12/20-12/31", "text": ["这几天是<span style=\"color:#0099cc;\">圣诞节</span>，主人肯定又去剁手买买买了~"] }
-    ]
+
+    "referrer_message": {
+      "localhost": ["欢迎阅读<span style=\"color:#0099cc;\">『", "』</span>", " - "],
+      "baidu": ["Hello! 来自 百度搜索 的朋友<br>你是搜索 <span style=\"color:#0099cc;\">", "</span> 找到的我吗？"],
+      "bing": ["Hello! 来自 必应搜索 的朋友<br>你是搜索 <span style=\"color:#0099cc;\">", "</span> 找到的我吗？"],
+      "so": ["Hello! 来自 360搜索 的朋友<br>你是搜索 <span style=\"color:#0099cc;\">", "</span> 找到的我吗？"],
+      "sogou": ["Hello! 来自 搜狗搜索 的朋友<br>你是搜索 <span style=\"color:#0099cc;\">", "</span> 找到的我吗？"],
+      "google": ["Hello! 来自 谷歌搜索 的朋友<br>欢迎阅读<span style=\"color:#0099cc;\">『", "』</span>", " - "],
+      "github": ["Hello! 来自 <span style=\"color:#0099cc;\">GitHub</span> 的朋友<br>欢迎阅读<span style=\"color:#0099cc;\">『", "』</span>", " - "],
+      "zhihu": ["Hello! 来自 <span style=\"color:#0099cc;\">知乎</span> 的朋友<br>欢迎阅读<span style=\"color:#0099cc;\">『", "』</span>", " - "],
+      "weibo": ["Hello! 来自 <span style=\"color:#0099cc;\">微博</span> 的朋友<br>欢迎阅读<span style=\"color:#0099cc;\">『", "』</span>", " - "],
+      "bilibili": ["Hello! 来自 <span style=\"color:#0099cc;\">哔哩哔哩</span> 的朋友<br>欢迎阅读<span style=\"color:#0099cc;\">『", "』</span>", " - "],
+      "juejin": ["Hello! 来自 <span style=\"color:#0099cc;\">掘金</span> 的朋友<br>欢迎阅读<span style=\"color:#0099cc;\">『", "』</span>", " - "],
+      "csdn": ["Hello! 来自 <span style=\"color:#0099cc;\">CSDN</span> 的朋友<br>欢迎阅读<span style=\"color:#0099cc;\">『", "』</span>", " - "],
+      "stackoverflow": ["Hello! 来自 <span style=\"color:#0099cc;\">Stack Overflow</span> 的朋友<br>欢迎阅读<span style=\"color:#0099cc;\">『", "』</span>", " - "],
+      "default": ["Hello! 来自 <span style=\"color:#0099cc;\">", "</span> 的朋友"],
+      "none": ["欢迎阅读<span style=\"color:#0099cc;\">『", "』</span>", " - "]
+    },
+
+    "referrer_hostname": {
+      "www.google.com": ["谷歌"],
+      "github.com": ["GitHub"],
+      "www.zhihu.com": ["知乎"],
+      "weibo.com": ["微博"],
+      "www.bilibili.com": ["哔哩哔哩"],
+      "juejin.cn": ["掘金"],
+      "blog.csdn.net": ["CSDN"],
+      "stackoverflow.com": ["Stack Overflow"]
+    },
+
+    "model_message": {
+      "1": [
+        "来自 Potion Maker 的 Pio 酱，药水铺的配方还没调完呢",
+        "Pio 酱在这里！今天也在偷偷研究新药剂哦",
+        "我是 Pio，来自 Potion Maker～要试试我调的药水吗？"
+      ],
+      "2": [
+        "来自 Potion Maker 的 Tia 酱，别看我这样，药剂我可是很拿手的",
+        "Tia 报到！我是 Pio 的姐姐，有话直说就行",
+        "我是 Tia～有什么烦恼吗？说出来会好受一点"
+      ],
+      "3": [
+        "22 娘登场！bilibili 的看板娘，今天也元气满满～",
+        "我是 22 娘，哔哩哔哩 (゜-゜)つロ 干杯~",
+        "22 娘在这里！bilibili 的两位看板娘之一哦"
+      ],
+      "4": [
+        "33 娘来啦～我是 22 的妹妹，bilibili 的看板娘",
+        "我是 33 娘。虽然看起来冷淡，但其实也很在乎你的",
+        "33 娘在此，姐姐又在闹了吧？我帮她道歉"
+      ],
+      "5": [
+        "我是雫，来自 ShizukuTalk，请多指教",
+        "水面很平静，所以能映出你的样子——雫",
+        "雫，不太会说话…但还是想陪着你"
+      ],
+      "6": [
+        "海王星的女神降临！我是守护这个世界的女神",
+        "来自《超次元游戏 海王星》的女神，准备迎接宠幸吧，凡人",
+        "这个世界，就交给本女神来守护吧"
+      ],
+      "7": [
+        "舰娘报到！我是《舰队 Collection》的一员",
+        "こちら、艦隊の一員です。よろしくね",
+        "提督，今天也辛苦了——舰娘随时待命"
+      ]
+    },
+
+    "hitokoto_api_message": {
+      "lwl12.com": ["这句一言来自 <span style=\"color:#0099cc;\">『{source}』</span>", "，是 <span style=\"color:#0099cc;\">{creator}</span> 投稿的", "。"],
+      "fghrsh.net": ["这句一言出处是 <span style=\"color:#0099cc;\">『{source}』</span>，是 <span style=\"color:#0099cc;\">FGHRSH</span> 在 {date} 收藏的！"],
+      "jinrishici.com": ["这句诗词出自 <span style=\"color:#0099cc;\">《{title}》</span>，是 {dynasty}诗人 {author} 创作的！"],
+      "hitokoto.cn": ["这句一言来自 <span style=\"color:#0099cc;\">『{source}』</span>，是 <span style=\"color:#0099cc;\">{creator}</span> 在 hitokoto.cn 投稿的。"]
+    }
+  },
+
+  "mouseover": [
+    {
+      "selector": ".waifu-tool .el-icon-house",
+      "text": [
+        "点击前往首页，想回到上一页可以用浏览器的后退哦",
+        "要回首页吗？我陪你一起回去~"
+      ]
+    },
+    {
+      "selector": ".waifu-tool .el-icon-chat-dot-round",
+      "text": [
+        "一言一语，一颦一笑。一字一句，一颗赛艇。",
+        "想听一句什么话呢？点我试试~"
+      ]
+    },
+    {
+      "selector": ".waifu-tool .el-icon-sunny",
+      "text": [
+        "要看看今天的天气怎么样吗？",
+        "出门之前，先查一查天气吧~"
+      ]
+    },
+    {
+      "selector": ".waifu-tool .el-icon-user",
+      "text": [
+        "嗯··· 要切换看板娘吗？",
+        "想换个人陪你？点我就行~"
+      ]
+    },
+    {
+      "selector": ".waifu-tool .el-icon-magic-stick",
+      "text": [
+        "喜欢换装 Play 吗？",
+        "要不要试试我的新衣服？"
+      ]
+    },
+    {
+      "selector": ".waifu-tool .el-icon-camera",
+      "text": [
+        "要拍张纪念照片吗？",
+        "摆个姿势，咔嚓一下~"
+      ]
+    },
+    {
+      "selector": ".waifu-tool .el-icon-document-checked",
+      "text": [
+        "来看看今天要做的事吧~",
+        "待办清单在这里哦"
+      ]
+    },
+    {
+      "selector": ".waifu-tool .el-icon-setting",
+      "text": [
+        "想调整什么设置吗？",
+        "这里可以改我的名字和台词哦"
+      ]
+    },
+    {
+      "selector": ".waifu-tool .el-icon-coffee-cup",
+      "text": [
+        "请我喝杯咖啡吧~",
+        "小小的支持，是我大大的动力"
+      ]
+    },
+    {
+      "selector": ".waifu-tool .el-icon-switch-button",
+      "text": [
+        "你不喜欢我了吗...",
+        "要暂时说再见了吗？我会在这里等你的"
+      ]
+    },
+    {
+      "selector": ".waifu-tool .el-icon-view",
+      "text": [
+        "想让我躲起来吗？",
+        "点这里可以把我藏起来哦"
+      ]
+    },
+    {
+      "selector": ".waifu-tool .el-icon-discover",
+      "text": [
+        "这里有关于我的信息呢",
+        "想认识我的话，点这里~"
+      ]
+    },
+    {
+      "selector": "#tor_show",
+      "text": ["翻页比较麻烦吗，点击可以显示这篇文章的目录呢"]
+    },
+    {
+      "selector": "#comment_go",
+      "text": ["想要去评论些什么吗？"]
+    },
+    {
+      "selector": "#night_mode",
+      "text": ["深夜时要爱护眼睛呀"]
+    },
+    {
+      "selector": "#qrcode",
+      "text": ["手机扫一下就能继续看，很方便呢"]
+    },
+    {
+      "selector": ".comment_reply",
+      "text": ["要吐槽些什么呢"]
+    },
+    {
+      "selector": "#back-to-top",
+      "text": ["回到开始的地方吧"]
+    },
+    {
+      "selector": "#author",
+      "text": ["该怎么称呼你呢"]
+    },
+    {
+      "selector": "#mail",
+      "text": ["留下你的邮箱，不然就是无头像人士了"]
+    },
+    {
+      "selector": "#url",
+      "text": ["你的家在哪里呢，好让我去参观参观"]
+    },
+    {
+      "selector": "#textarea",
+      "text": ["认真填写哦，垃圾评论是禁止事项"]
+    },
+    {
+      "selector": ".OwO-logo",
+      "text": ["要插入一个表情吗"]
+    },
+    {
+      "selector": "#csubmit",
+      "text": ["要[提交]^(Commit)了吗，首次评论需要审核，请耐心等待~"]
+    },
+    {
+      "selector": ".ImageBox",
+      "text": ["点击图片可以放大呢"]
+    },
+    {
+      "selector": "input[name=s]",
+      "text": ["找不到想看的内容？搜索看看吧"]
+    },
+    {
+      "selector": ".previous",
+      "text": ["去上一页看看吧"]
+    },
+    {
+      "selector": ".next",
+      "text": ["去下一页看看吧"]
+    },
+    {
+      "selector": ".dropdown-toggle",
+      "text": ["这里是菜单"]
+    },
+    {
+      "selector": "c-player a.play-icon",
+      "text": ["想要听点音乐吗"]
+    },
+    {
+      "selector": "c-player div.time",
+      "text": ["在这里可以调整<span style=\"color:#0099cc;\">播放进度</span>呢"]
+    },
+    {
+      "selector": "c-player div.volume",
+      "text": ["在这里可以调整<span style=\"color:#0099cc;\">音量</span>呢"]
+    },
+    {
+      "selector": "c-player div.list-button",
+      "text": ["<span style=\"color:#0099cc;\">播放列表</span>里都有什么呢"]
+    },
+    {
+      "selector": "c-player div.lyric-button",
+      "text": ["有<span style=\"color:#0099cc;\">歌词</span>的话就能跟着一起唱呢"]
+    },
+    {
+      "selector": ".container a[href^='http']",
+      "text": ["要看看 <span style=\"color:#0099cc;\">{text}</span> 么？"]
+    },
+    {
+      "selector": ".waifu #live2d",
+      "text": [
+        "干嘛呢你，快把手拿开",
+        "鼠…鼠标放错地方了！",
+        "别一直盯着我看啦，会害羞的",
+        "再戳我就要收费了哦"
+      ]
+    }
+  ],
+
+  "click": [
+    {
+      "selector": ".waifu #live2d",
+      "text": [
+        "是…是不小心碰到了吧",
+        "你看到我的小熊了吗",
+        "再摸的话我可要报警了！⌇●﹏●⌇",
+        "110吗，这里有个变态一直在摸我(ó﹏ò｡)",
+        "唔…被你发现了",
+        "轻一点啦，会痒的"
+      ]
+    }
+  ],
+
+  "seasons": [
+    {
+      "date": "01/01",
+      "text": [
+        "<span style=\"color:#0099cc;\">元旦</span>了呢，新的一年又开始了，今年是 {year} 年~",
+        "新年快乐！{year} 也要好好照顾自己呀"
+      ]
+    },
+    {
+      "date": "02/14",
+      "text": [
+        "又是一年<span style=\"color:#0099cc;\">情人节</span>，有喜欢的人吗~",
+        "情人节快乐！今天收到花了吗？"
+      ]
+    },
+    {
+      "date": "03/08",
+      "text": ["今天是<span style=\"color:#0099cc;\">妇女节</span>！祝所有女生节日快乐~"]
+    },
+    {
+      "date": "03/12",
+      "text": [
+        "今天是<span style=\"color:#0099cc;\">植树节</span>，要保护环境呀",
+        "植树节快乐！多种一棵树，多一片绿"
+      ]
+    },
+    {
+      "date": "04/01",
+      "text": [
+        "悄悄告诉你一个秘密~<span style=\"background-color:#34495e;\">今天是愚人节，不要被骗了哦~</span>",
+        "愚人节快乐！小心别被同事骗了"
+      ]
+    },
+    {
+      "date": "05/01",
+      "text": [
+        "今天是<span style=\"color:#0099cc;\">五一劳动节</span>，计划好假期去哪里了吗~",
+        "劳动节快乐！休息也是劳动的一部分哦"
+      ]
+    },
+    {
+      "date": "03/05",
+      "text": ["今天是<span style=\"color:#0099cc;\">学雷锋纪念日</span>，做点好事吧~"]
+    },
+    {
+      "date": "03/15",
+      "text": ["今天是<span style=\"color:#0099cc;\">消费者权益日</span>，遇到问题记得维权"]
+    },
+    {
+      "date": "04/04-04/06",
+      "text": ["<span style=\"color:#0099cc;\">清明节</span>，记得回家看看，也多陪陪家人"]
+    },
+    {
+      "date": "04/22",
+      "text": ["今天是<span style=\"color:#0099cc;\">世界地球日</span>，为地球做件小事吧"]
+    },
+    {
+      "date": "04/23",
+      "text": ["今天是<span style=\"color:#0099cc;\">世界读书日</span>，读到好书了吗~"]
+    },
+    {
+      "date": "05/04",
+      "text": ["今天是<span style=\"color:#0099cc;\">青年节</span>，青春正好~"]
+    },
+    {
+      "date": "05/12",
+      "text": ["<span style=\"color:#0099cc;\">护士节</span>，向白衣天使们致敬"]
+    },
+    {
+      "date": "05/17",
+      "text": ["今天是<span style=\"color:#0099cc;\">世界电信日</span>，离不开网络的一天呢"]
+    },
+    {
+      "date": "05/31",
+      "text": ["今天是<span style=\"color:#0099cc;\">世界无烟日</span>，不抽烟的人运气都不会差"]
+    },
+    {
+      "date": "06/05",
+      "text": ["今天是<span style=\"color:#0099cc;\">世界环境日</span>，少用一次性用品吧~"]
+    },
+    {
+      "date": "06/07-06/09",
+      "text": ["这几天<span style=\"color:#0099cc;\">高考</span>呢，祝所有考生金榜题名！"]
+    },
+    {
+      "date": "06/18",
+      "text": ["今天是<span style=\"color:#0099cc;\">购物节</span>，理性消费呀"]
+    },
+    {
+      "date": "07/01",
+      "text": ["今天是<span style=\"color:#0099cc;\">建党节</span>"]
+    },
+    {
+      "date": "07/07",
+      "text": ["<span style=\"color:#0099cc;\">七七事变纪念日</span>，勿忘国耻"]
+    },
+    {
+      "date": "08/01",
+      "text": ["今天是<span style=\"color:#0099cc;\">建军节</span>，致敬最可爱的人"]
+    },
+    {
+      "date": "09/10",
+      "text": [
+        "<span style=\"color:#0099cc;\">教师节</span>，别忘了给老师发条祝福呀~",
+        "教师节快乐！那个曾经管你的人，现在想起来是不是很感谢"
+      ]
+    },
+    {
+      "date": "10/24",
+      "text": ["今天是<span style=\"color:#0099cc;\">程序员节</span>，1024！代码永无 bug 呀"]
+    },
+    {
+      "date": "11/08",
+      "text": ["今天是<span style=\"color:#0099cc;\">记者节</span>，感谢记录真相的人"]
+    },
+    {
+      "date": "11/11",
+      "text": [
+        "今天是<span style=\"color:#0099cc;\">双十一</span>呀，购物车清空了吗~",
+        "双十一快乐！理性消费，别剁手过头哦"
+      ]
+    },
+    {
+      "date": "12/13",
+      "text": ["<span style=\"color:#0099cc;\">南京大屠杀国家公祭日</span>，铭记历史，珍爱和平"]
+    },
+    {
+      "date": "06/01",
+      "text": [
+        "<span style=\"color:#0099cc;\">儿童节</span>了呢，快活的时光总是短暂，要是永远长不大该多好啊…",
+        "儿童节快乐！今天可以理直气壮地吃糖了"
+      ]
+    },
+    {
+      "date": "09/03",
+      "text": ["<span style=\"color:#0099cc;\">中国人民抗日战争胜利纪念日</span>，铭记历史、缅怀先烈、珍爱和平、开创未来。"]
+    },
+    {
+      "date": "10/01",
+      "text": [
+        "<span style=\"color:#0099cc;\">国庆节</span>，祝祖国生日快乐！",
+        "国庆快乐！假期有什么安排吗~"
+      ]
+    },
+    {
+      "date": "12/24-12/25",
+      "text": [
+        "这几天是<span style=\"color:#0099cc;\">圣诞节</span>，准备怎么过呢？",
+        "圣诞节快乐！记得给自己留个小礼物"
+      ]
+    },
+    {
+      "date": "12/31",
+      "text": [
+        "{year} 年的最后一天了，明年也请多关照~",
+        "跨年夜！新的一年见啦"
+      ]
+    }
+  ]
 }

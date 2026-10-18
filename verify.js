@@ -693,6 +693,124 @@ head('=== ⑧ 换皮肤 / 换模型 id 语义（对齐 fghrsh PHP）===');
 }
 
 // ============================================================================
+head('=== ⑨ 皮肤按角色记忆（回归：换一圈角色回来变原皮）===');
+/*
+ * 曾出现的 bug：
+ *   给 Pio 挑了第 5 套衣服，刷新还在；
+ *   但换角色绕一圈回到 Pio，又变回原皮。
+ *
+ * 原因：
+ *   存储里只保存一个全局 modelTexturesId，换角色时被新角色的皮肤覆盖。
+ *   而 loadOtherModel() 调的是 loadModel(id) —— 皮肤参数默认 0，
+ *   于是每次换角色都把全局皮肤写成 0，Pio 的 5 就没了。
+ *
+ * 现在：
+ *   皮肤按角色分开存（textures_<角色id>），loadModel 不传皮肤时
+ *   自动读取该角色自己记住的那套。
+ */
+{
+    // 复刻库里的存储 + loadModel 逻辑
+    const PREFIX = 'yyy404-';
+    let store;
+    const sg = (k) => (store[PREFIX + k] !== undefined ? store[PREFIX + k] : null);
+    const ss = (k, v) => { store[PREFIX + k] = String(v); };
+
+    function sgTextures(mid) {
+        const n = parseInt(sg('textures_' + mid), 10);
+        return (isNaN(n) || n < 0) ? 0 : n;
+    }
+    function ssTextures(mid, tid) { ss('textures_' + mid, parseInt(tid, 10) || 0); }
+
+    function migrate(mid) {
+        if (sg('textures_' + mid) !== null) return false;
+        const old = sg('modelTexturesId');
+        if (old === null || old === '') return false;
+        const n = parseInt(old, 10);
+        if (isNaN(n) || n <= 0) return false;
+        ssTextures(mid, n);
+        return true;
+    }
+
+    let cur = { id: 1, texturesId: 0 };
+    function loadModel(modelId, modelTexturesId) {
+        const mid = parseInt(modelId, 10) || 1;
+        const tid = (modelTexturesId === undefined || modelTexturesId === null)
+            ? sgTextures(mid)
+            : (parseInt(modelTexturesId, 10) || 0);
+        cur = { id: mid, texturesId: tid };
+        ss('modelId', mid);
+        ssTextures(mid, tid);
+        ss('modelTexturesId', tid);   // 兼容写一份当前值
+        return cur;
+    }
+
+    // ---- ① 核心场景 ----
+    store = {};
+    loadModel(1, 5);                 // Pio 选第 5 套
+    loadModel(2);                    // 换 Tia（不传皮肤）
+    loadModel(3);                    // 换 22娘
+    const backToPio = loadModel(1);  // 换回 Pio
+
+    backToPio.texturesId === 5
+        ? ok('换一圈角色回到 Pio，仍是第 5 套')
+        : bad('回到 Pio 皮肤丢失: 期望 5，实际 ' + backToPio.texturesId);
+
+    // ---- ② 新角色首次出现应是原皮 ----
+    const tiaFirst = cur.id === 2 ? null : null;   // 占位，下面单独测
+    store = {};
+    loadModel(1, 5);
+    const tia = loadModel(2);
+    tia.texturesId === 0
+        ? ok('没记录过的新角色首次进入是原皮')
+        : bad('新角色首次进入应为原皮，实际 ' + tia.texturesId);
+
+    // ---- ③ 两个角色的皮肤互不影响 ----
+    store = {};
+    loadModel(1, 5);
+    loadModel(2, 30);
+    const p1 = loadModel(1);
+    const t1 = loadModel(2);
+    (p1.texturesId === 5 && t1.texturesId === 30)
+        ? ok('两个角色各自记住自己的皮肤（Pio=5, Tia=30）')
+        : bad(`角色间皮肤串了: Pio=${p1.texturesId} Tia=${t1.texturesId}`);
+
+    // ---- ④ 重复切回同一角色，皮肤保持 ----
+    store = {};
+    loadModel(1, 7);
+    for (let i = 0; i < 5; i++) { loadModel(2); loadModel(3); loadModel(1); }
+    cur.texturesId === 7
+        ? ok('反复切换 5 轮，Pio 皮肤仍是第 7 套')
+        : bad('反复切换后皮肤丢失，实际 ' + cur.texturesId);
+
+    // ---- ⑤ 旧数据迁移 ----
+    store = { 'yyy404-modelId': '1', 'yyy404-modelTexturesId': '53' };
+    const migrated = migrate(1);
+    (migrated && sg('textures_1') === '53')
+        ? ok('旧版单一皮肤值能迁移给当前角色（→ 第 53 套）')
+        : bad('旧数据迁移失败');
+
+    // ---- ⑥ 迁移幂等 ----
+    const again = migrate(1);
+    (!again && sg('textures_1') === '53')
+        ? ok('迁移可重复执行，不会重复写入')
+        : bad('迁移不幂等');
+
+    // ---- ⑦ 源码检查：loadOtherModel 不应传皮肤参数 ----
+    const libSrc = fs.readFileSync(A('waifu-tips.js'), 'utf8');
+    /loadModel\(result\.model\['id'\]\)/.test(libSrc)
+        ? ok('loadOtherModel 不传皮肤参数（由 loadModel 自动读该角色的）')
+        : bad('loadOtherModel 仍显式传皮肤，会覆盖记录');
+
+    /function storageGetModelTextures/.test(libSrc)
+        ? ok('库中存在 storageGetModelTextures（按角色读皮肤）')
+        : bad('缺少 storageGetModelTextures');
+
+    /function migrateModelTextures/.test(libSrc)
+        ? ok('库中存在 migrateModelTextures（旧数据迁移）')
+        : bad('缺少 migrateModelTextures');
+}
+
+// ============================================================================
 console.log('\n================================');
 console.log('  通过 ' + pass + ' / 失败 ' + fail);
 if (fail) process.exit(1);
