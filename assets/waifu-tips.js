@@ -1078,3 +1078,40 @@ function loadTipsMessage(result) {
     $('.waifu-tool .el-icon-magic-stick').click(function (){loadRandTextures()});
     $('.waifu-tool .el-icon-chat-dot-round').click(function (){showHitokoto()});
 }
+
+/* ============================================================================
+ * 导出到全局
+ * ----------------------------------------------------------------------------
+ * 这里用函数声明（function xxx(){}）定义的接口，在普通 <script> 里会自动
+ * 成为 window 的属性，但在用户脚本的 @require 作用域里不会 —— 那是独立的
+ * 包装函数作用域，外部拿不到。
+ *
+ * 所以显式挂一遍，让「网页直接引入」和「用户脚本 @require」两种用法都能
+ * 拿到同一套 API。
+ * ========================================================================== */
+
+// 入口
+window.initModel          = initModel;
+window.loadModel          = loadModel;
+
+// 消息
+window.showMessage        = showMessage;
+window.hideMessage        = hideMessage;
+window.getRandText        = getRandText;
+window.empty              = empty;
+
+// 存储
+window.getStorage         = getStorage;
+window.storageGet         = storageGet;
+window.storageSet         = storageSet;
+
+// 位置与拖拽
+window.setWaifuLeft       = setWaifuLeft;
+window.animateWaifuTo     = animateWaifuTo;
+window.applyDockSide      = applyDockSide;
+window.initWaifuPosition  = initWaifuPosition;
+window.initDraggable      = initDraggable;
+window.initHideMode       = initHideMode;
+
+// 台词
+window.loadTipsMessage    = loadTipsMessage;
