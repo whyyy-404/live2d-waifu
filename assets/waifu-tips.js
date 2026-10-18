@@ -98,7 +98,8 @@ live2d_settings['waifuEdgeSide']        = 'right:0';    // 看板娘贴边方向
 live2d_settings['waifuDraggable']       = 'axis-x';     // 'axis-x' | 'disable'
 live2d_settings['waifuDraggableRevert'] = true;         // 松手是否吸附到边缘
 live2d_settings['waifuDraggableSave']   = true;         // 是否记住停靠在哪一边
-live2d_settings['waifuDraggableSnap']   = 1000;         // 吸附动画时长（毫秒）
+live2d_settings['waifuDraggableSnap']   = 300;          // 吸附动画【最大】时长（毫秒）
+                                                        // 实际时长按移动距离缩放：<40px 用 120ms，>=400px 用这个值
 
 // 隐藏模式（点工具栏的眼睛图标）
 //   行为：鼠标悬停在模型上时模型隐藏，移开恢复；工具栏全程可见可点。
@@ -359,13 +360,43 @@ function setWaifuLeft(px, animate) {
     }
 }
 
-/** 带动画地把看板娘移动到目标位置 */
-function animateWaifuTo(targetLeft, duration, onDone) {
+/**
+ * 带动画地把看板娘移动到目标位置。
+ *
+ * ⚠️ 时长按【实际移动距离】缩放，而不是固定时长。
+ *
+ *    之前的做法是固定 duration（默认 1000ms）。只拖动一点点时，
+ *    看板娘几乎没离开原位，却还要花 1 秒慢慢挪回去 —— 视觉上就是
+ *    「先往回弹一下、再缓缓归位」，很像闪了一下。
+ *
+ *    现在：距离越短，时长越短（最短 120ms）。小幅移动几乎瞬间归位，
+ *    大幅移动才用完整时长缓动，手感和 1.0.3 的 revertDuration 一致。
+ *
+ * @param {number} targetLeft 目标 left（px）
+ * @param {number} maxDuration 最大动画时长（px 跨度较大时使用）
+ * @param {function} onDone   动画结束回调
+ */
+function animateWaifuTo(targetLeft, maxDuration, onDone) {
     var el = document.querySelector('.waifu');
     if (!el) return;
 
     var startLeft = parseFloat(el.style.left);
     if (isNaN(startLeft)) startLeft = el.getBoundingClientRect().left;
+
+    var distance = Math.abs(targetLeft - startLeft);
+    var maxMs = maxDuration || 300;
+
+    // 距离映射到时长：<40px 视为微调（立即归位），>=400px 用完整时长
+    var duration;
+    if (distance < 40) {
+        duration = 120;
+    } else if (distance >= 400) {
+        duration = maxMs;
+    } else {
+        // 40~400px 线性插值
+        duration = 120 + (distance - 40) / 360 * (maxMs - 120);
+    }
+    duration = Math.round(duration);
 
     // 用 CSS transition 而不是 requestAnimationFrame：
     // 更省 CPU，而且和样式表里的 transition 保持一致
