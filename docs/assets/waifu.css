@@ -1,0 +1,422 @@
+/*!
+ * yyy404 看板娘样式表
+ * ============================================================================
+ * 基于 fghrsh 的 live2d_demo（GPL-2.0）改造：
+ *     https://github.com/fghrsh/live2d_demo
+ *
+ * 相比原版的改动
+ * ----------------------------------------------------------------------------
+ *  1. 图标：Flat-UI-Icons → element-ui Icons
+ *       原版 7 个图标为 fui-home / fui-chat / fui-eye / fui-user /
+ *       fui-photo / fui-info-circle / fui-cross
+ *       现改为 el-icon-house / el-icon-chat-dot-round / el-icon-user /
+ *       el-icon-magic-stick / el-icon-camera / el-icon-view /
+ *       el-icon-discover / el-icon-switch-button（8 个）
+ *       ⚠️ element-ui 的字体由外部 CSS 提供（icon.css 或 index.css），
+ *          本文件不再自带 @font-face。
+ *
+ *  2. 气泡框：原版是「半透明米黄 + 单行省略号」，
+ *     现改为「白底 + 圆角 + 小三角箭头 + 多行换行 + 淡入上浮」。
+ *
+ *  3. 工具栏：位置由 top:50px 改为 top:30px，并支持停靠左侧镜像。
+ *
+ *  4. 新增 .waifu-tool.left-side（停靠左侧时工具栏镜像）
+ *     以及隐藏模式的样式（见 2.5 节）。
+ *
+ * 依赖
+ * ----------------------------------------------------------------------------
+ *   element-ui 图标字体（二选一）：
+ *     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui/lib/theme-chalk/icon.css">
+ *     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui/lib/theme-chalk/index.css">
+ * ============================================================================
+ */
+
+/* ==========================================================================
+   1. 看板娘容器
+   ========================================================================== */
+
+.waifu {
+    position: fixed;
+    bottom: 0;
+    z-index: 1;
+    font-size: 0;
+    /* ⚠️ 不用 transform 做「悬停微抬」。
+       因为拖拽要用 transform: translate() 才不卡（见 waifu-tips.js 的 initDraggable），
+       两者抢同一个属性会互相覆盖。
+       改用 margin-bottom 达到同样的视觉效果，且完全不影响 transform。 */
+    margin-bottom: 0;
+    transition: margin-bottom 0.3s ease-in-out;
+}
+
+.waifu:hover {
+    margin-bottom: 3px;
+}
+
+/* 拖拽中：禁用过渡，避免跟手时被动画拖慢 */
+.waifu.dragging {
+    transition: none !important;
+    /* 禁止选中文字，避免拖拽时把页面文字一起选中。
+       ⚠️ 不改鼠标指针 —— 保持系统默认箭头，避免拖动时视觉上"跳"一下。 */
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* ==========================================================================
+   2.5 隐藏模式
+   --------------------------------------------------------------------------
+   点工具栏的「眼睛」图标进入 / 退出。
+
+   行为：
+     · 进入后看板娘【保持原样显示】（不是半透明）
+     · 鼠标悬停在模型上 → 模型完全隐藏
+     · 鼠标移开           → 模型恢复
+     · 工具栏始终显示、始终可点（否则用户就没法点眼睛关掉了）
+
+   ⚠️ 实现要点：
+     隐藏的是【模型画布】，不是整个 .waifu —— 因为工具栏属于 .waifu 的子元素，
+     如果隐藏整个 .waifu，工具栏也会跟着消失。
+
+     透明度由 JS 直接设置（见 waifu-tips.js 的 initHideMode），
+     这里只提供过渡动画，不要用类切换控制状态 —— 否则透明度一变，
+     鼠标底下的元素忽隐忽现，pointerenter/pointerleave 会反复触发，
+     导致气泡框和工具栏疯狂跳动。
+   ========================================================================== */
+
+/* 只有画布参与过渡动画 */
+.waifu #live2d {
+    transition: opacity 0.25s ease-in-out;
+}
+
+/* 「眼睛」按钮在隐藏模式开启时高亮 */
+.waifu-tool .el-icon-view.active {
+    color: #0071e3;
+}
+
+/* ==========================================================================
+   2. 气泡框（台词提示）
+   ========================================================================== */
+
+.waifu-tips {
+    opacity: 0;
+    margin: -50px 20px;
+    padding: 8px 14px;
+    border: 1px solid rgb(211, 211, 211);
+    border-radius: 12px;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    position: absolute;
+    min-width: 80px !important;
+    max-width: 250px !important;
+    width: fit-content !important;
+    height: auto !important;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.2px;
+    color: rgb(0, 0, 0);
+    transition: opacity 0.3s ease-in-out, transform 0.3s;
+    word-wrap: break-word;
+    white-space: normal;
+    display: inline-block;
+    text-align: center;
+    isolation: isolate;
+    /* 气泡框里的文字要能被选中、复制 */
+    user-select: text;
+    -webkit-user-select: text;
+    cursor: text;
+}
+
+/* 指向看板娘的小三角箭头（原版没有，是新增的） */
+.waifu-tips::before {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    bottom: -8px;
+    right: 30px;
+    transform: rotate(45deg);
+    background-color: rgb(255, 255, 255);
+    border-right: 1px solid rgb(211, 211, 211);
+    border-bottom: 1px solid rgb(211, 211, 211);
+    z-index: -1;
+}
+
+/* 显示状态（JS 加/去这个类来淡入淡出） */
+.waifu-tips.active {
+    opacity: 1;
+    transform: translateY(-5px);
+}
+
+/* 气泡里的小图标（如 el-icon-water-cup）微调对齐 */
+.waifu-tips [class^="el-icon-"],
+.waifu-tips [class*=" el-icon-"] {
+    font-size: 15px;
+    vertical-align: -1px;
+    margin: 0 1px;
+}
+
+/* ==========================================================================
+   3. 工具栏
+   ========================================================================== */
+
+.waifu-tool {
+    display: none;
+    color: #aaa;
+    top: 30px;
+    right: 10px;
+    position: absolute;
+    font-size: 14px;
+}
+
+.waifu:hover .waifu-tool {
+    display: block;
+}
+
+.waifu-tool span {
+    display: block;
+    cursor: pointer;
+    color: #5b6c7d;
+    transition: 0.2s;
+    margin: 5px 0;
+    line-height: 20px;
+}
+
+.waifu-tool span:hover {
+    color: #34495e;
+}
+
+/* 停靠左侧时工具栏镜像到左边 */
+.waifu-tool.left-side {
+    left: 10px;
+    right: auto;
+}
+
+/* element-ui 图标在工具栏里的尺寸 */
+.waifu-tool [class^="el-icon-"],
+.waifu-tool [class*=" el-icon-"] {
+    font-size: 16px;
+}
+
+/* ==========================================================================
+   4. 抖动动画（原版保留，Shizuku 等模型会触发）
+   ========================================================================== */
+
+@keyframes shake {
+    2% {
+        transform: translate(0.5px, -1.5px) rotate(-0.5deg);
+    }
+
+    4% {
+        transform: translate(0.5px, 1.5px) rotate(1.5deg);
+    }
+
+    6% {
+        transform: translate(1.5px, 1.5px) rotate(1.5deg);
+    }
+
+    8% {
+        transform: translate(2.5px, 1.5px) rotate(0.5deg);
+    }
+
+    10% {
+        transform: translate(0.5px, 2.5px) rotate(0.5deg);
+    }
+
+    12% {
+        transform: translate(1.5px, 1.5px) rotate(0.5deg);
+    }
+
+    14% {
+        transform: translate(0.5px, 0.5px) rotate(0.5deg);
+    }
+
+    16% {
+        transform: translate(-1.5px, -0.5px) rotate(1.5deg);
+    }
+
+    18% {
+        transform: translate(0.5px, 0.5px) rotate(1.5deg);
+    }
+
+    20% {
+        transform: translate(2.5px, 2.5px) rotate(1.5deg);
+    }
+
+    22% {
+        transform: translate(0.5px, -1.5px) rotate(1.5deg);
+    }
+
+    24% {
+        transform: translate(-1.5px, 1.5px) rotate(-0.5deg);
+    }
+
+    26% {
+        transform: translate(1.5px, 0.5px) rotate(1.5deg);
+    }
+
+    28% {
+        transform: translate(-0.5px, -0.5px) rotate(-0.5deg);
+    }
+
+    30% {
+        transform: translate(1.5px, -0.5px) rotate(-0.5deg);
+    }
+
+    32% {
+        transform: translate(2.5px, -1.5px) rotate(1.5deg);
+    }
+
+    34% {
+        transform: translate(2.5px, 2.5px) rotate(-0.5deg);
+    }
+
+    36% {
+        transform: translate(0.5px, -1.5px) rotate(0.5deg);
+    }
+
+    38% {
+        transform: translate(2.5px, -0.5px) rotate(-0.5deg);
+    }
+
+    40% {
+        transform: translate(-0.5px, 2.5px) rotate(0.5deg);
+    }
+
+    42% {
+        transform: translate(-1.5px, 2.5px) rotate(0.5deg);
+    }
+
+    44% {
+        transform: translate(-1.5px, 1.5px) rotate(0.5deg);
+    }
+
+    46% {
+        transform: translate(1.5px, -0.5px) rotate(-0.5deg);
+    }
+
+    48% {
+        transform: translate(2.5px, -0.5px) rotate(0.5deg);
+    }
+
+    50% {
+        transform: translate(-1.5px, 1.5px) rotate(0.5deg);
+    }
+
+    52% {
+        transform: translate(-0.5px, 1.5px) rotate(0.5deg);
+    }
+
+    54% {
+        transform: translate(-1.5px, 1.5px) rotate(0.5deg);
+    }
+
+    56% {
+        transform: translate(0.5px, 2.5px) rotate(1.5deg);
+    }
+
+    58% {
+        transform: translate(2.5px, 2.5px) rotate(0.5deg);
+    }
+
+    60% {
+        transform: translate(2.5px, -1.5px) rotate(1.5deg);
+    }
+
+    62% {
+        transform: translate(-1.5px, 0.5px) rotate(1.5deg);
+    }
+
+    64% {
+        transform: translate(-1.5px, 1.5px) rotate(1.5deg);
+    }
+
+    66% {
+        transform: translate(0.5px, 2.5px) rotate(1.5deg);
+    }
+
+    68% {
+        transform: translate(2.5px, -1.5px) rotate(1.5deg);
+    }
+
+    70% {
+        transform: translate(2.5px, 2.5px) rotate(0.5deg);
+    }
+
+    72% {
+        transform: translate(-0.5px, -1.5px) rotate(1.5deg);
+    }
+
+    74% {
+        transform: translate(-1.5px, 2.5px) rotate(1.5deg);
+    }
+
+    76% {
+        transform: translate(-1.5px, 2.5px) rotate(1.5deg);
+    }
+
+    78% {
+        transform: translate(-1.5px, 2.5px) rotate(0.5deg);
+    }
+
+    80% {
+        transform: translate(-1.5px, 0.5px) rotate(-0.5deg);
+    }
+
+    82% {
+        transform: translate(-1.5px, 0.5px) rotate(-0.5deg);
+    }
+
+    84% {
+        transform: translate(-0.5px, 0.5px) rotate(1.5deg);
+    }
+
+    86% {
+        transform: translate(2.5px, 1.5px) rotate(0.5deg);
+    }
+
+    88% {
+        transform: translate(-1.5px, 0.5px) rotate(1.5deg);
+    }
+
+    90% {
+        transform: translate(-1.5px, -0.5px) rotate(-0.5deg);
+    }
+
+    92% {
+        transform: translate(-1.5px, -1.5px) rotate(1.5deg);
+    }
+
+    94% {
+        transform: translate(0.5px, 0.5px) rotate(-0.5deg);
+    }
+
+    96% {
+        transform: translate(2.5px, -0.5px) rotate(-0.5deg);
+    }
+
+    98% {
+        transform: translate(-1.5px, -1.5px) rotate(-0.5deg);
+    }
+
+    0%, 100% {
+        transform: translate(0, 0) rotate(0);
+    }
+}
+
+/* ==========================================================================
+   图标说明（不再需要 @font-face）
+   --------------------------------------------------------------------------
+   原版在这里定义 Flat-UI-Icons 字体和 7 个 fui-* 图标的字符码。
+   本版本改用 element-ui，其字体与字符码由 element-ui 自己的 CSS 提供，
+   所以这里只需要确保 element-ui 的 CSS 被引入即可。
+
+   工具栏 8 个按钮与图标的对应关系（详见 waifu-tips.js）：
+     .el-icon-house            →  首页      \e754
+     .el-icon-chat-dot-round   →  一言      \e72f
+     .el-icon-user             →  换角色    \e6e3
+     .el-icon-magic-stick      →  换皮肤    \e76a
+     .el-icon-camera           →  拍照      \e779
+     .el-icon-view             →  隐藏      \e6ce
+     .el-icon-discover         →  关于      \e70a
+     .el-icon-switch-button    →  关闭      \e71b
+   ========================================================================== */
