@@ -241,16 +241,16 @@ FILES.forEach((f) => {
                          : bad(f + ' 缺少: ' + missing.join(', '));
 });
 
-// verify.html（测试页）
+// docs/index.html（GitHub Pages 演示页）
 {
-    const p = path.join(ROOT, 'verify.html');
+    const p = path.join(ROOT, 'docs', 'index.html');
     if (fs.existsSync(p)) {
         const txt = fs.readFileSync(p, 'utf8');
         const missing = ICONS.filter((ic) => txt.indexOf(ic) === -1);
-        missing.length === 0 ? ok('verify.html 含全部 8 个图标')
-                             : bad('verify.html 缺少: ' + missing.join(', '));
+        missing.length === 0 ? ok('docs/index.html 含全部 8 个图标')
+                             : bad('docs/index.html 缺少: ' + missing.join(', '));
     } else {
-        bad('verify.html 不存在');
+        bad('docs/index.html 不存在');
     }
 }
 
