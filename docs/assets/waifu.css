@@ -38,7 +38,12 @@
 .waifu {
     position: fixed;
     bottom: 0;
-    z-index: 1;
+    /* ⚠️ 必须足够高，否则会被网站的导航栏 / 浮层 / 弹窗盖住。
+       fghrsh 原版用的是 z-index: 1 —— 那是在他自己的博客里，页面元素少，
+       换成真实网站就基本都会被遮住。
+       2147483000 接近 int32 上限（2147483647）但不会溢出，
+       比常见的 999999 高两千倍，几乎不可能被人盖住。 */
+    z-index: 2147483000;
     font-size: 0;
     /* ⚠️ 不用 transform 做「悬停微抬」。
        因为拖拽要用 transform: translate() 才不卡（见 waifu-tips.js 的 initDraggable），
