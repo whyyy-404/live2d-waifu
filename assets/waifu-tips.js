@@ -1190,6 +1190,10 @@ window.empty              = empty;
 window.getStorage         = getStorage;
 window.storageGet         = storageGet;
 window.storageSet         = storageSet;
+// 皮肤按角色记忆：每个角色各自记住自己穿第几套
+window.storageGetModelTextures = storageGetModelTextures;
+window.storageSetModelTextures = storageSetModelTextures;
+window.migrateModelTextures    = migrateModelTextures;
 
 // 位置与拖拽
 window.setWaifuLeft       = setWaifuLeft;
