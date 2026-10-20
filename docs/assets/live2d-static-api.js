@@ -621,26 +621,27 @@ function createStaticModelAPI(opts) {
 
         var idxUrl = indexUrlOf(variant.name);
 
-        // ⚠️ 关键：给 URL 加一个唯一参数。
-        //
-        //    live2d.js 内部有个 requestCache：
-        //        loadBytes = function (url, cb) {
-        //            if (requestCache[url] !== undefined) { cb(requestCache[url]); return; }
-        //            ...
-        //        }
-        //    它按「完整 URL」缓存响应。
-        //
-        //    如果不加参数，换皮肤时请求的还是同一个 index.json 地址，
-        //    引擎会直接命中缓存、根本不发 XHR —— 我们的改写层就永远没机会执行，
-        //    表现就是「点了换皮肤，日志有应答，但画面不变」。
-        //
-        //    加上 ?_t=<时间戳> 让每次都是新 URL，强制引擎重新走 XHR。
-        //    仓库里的 index.json 本身不带查询参数，静态托管会忽略 ?_t=。
-        idxUrl += '?_t=' + Date.now();
+        // 普通模型 + 指定了贴图套 → 需要改写 textures
+        var needRewrite = !m.isGroup && tid > 0 &&
+                          variant.textures && variant.textures[tid - 1];
 
-        // 普通模型 + 指定了贴图套 → 登记改写，XHR hook 读到这份 index.json 时会替换 textures。
-        // 分组模型不需要（贴图 id 代表的是形态，形态本身就有自己的 index.json）。
-        if (!m.isGroup && tid > 0 && variant.textures && variant.textures[tid - 1]) {
+        if (needRewrite) {
+            // ⚠️ 只有在需要改写时才加唯一参数。
+            //
+            //    live2d.js 内部有 requestCache，按「完整 URL」缓存：
+            //        loadBytes = function (url, cb) {
+            //            if (requestCache[url] !== undefined) { cb(requestCache[url]); return; }
+            //            ...
+            //        }
+            //    换皮肤时如果不加参数，引擎直接命中缓存、根本不发 XHR，
+            //    改写层就没机会执行（表现为「点了换皮肤，画面不变」）。
+            //
+            //    但首次加载和换角色（tid = 0）并不需要改写 ——
+            //    这种情况如果也加时间戳，等于每次都换新 URL，
+            //    浏览器缓存与引擎缓存全部失效，模型反复重新下载，加载明显变慢。
+            //    所以只在 needRewrite 时才加。
+            idxUrl += '?_t=' + Date.now();
+
             var modelDir = normBase + 'model/' + variant.name + '/';
             var payload = relativize(variant.index, modelDir, variant.name);
             payload.textures = variant.textures[tid - 1].map(function (t) {
