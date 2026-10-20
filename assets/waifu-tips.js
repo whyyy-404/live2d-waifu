@@ -1179,6 +1179,8 @@ function loadTipsMessage(result) {
 // 入口
 window.initModel          = initModel;
 window.loadModel          = loadModel;
+window.loadOtherModel     = loadOtherModel;
+window.loadRandTextures   = loadRandTextures;
 
 // 消息
 window.showMessage        = showMessage;

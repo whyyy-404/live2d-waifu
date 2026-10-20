@@ -1179,6 +1179,8 @@ function loadTipsMessage(result) {
 // 入口
 window.initModel          = initModel;
 window.loadModel          = loadModel;
+window.loadOtherModel     = loadOtherModel;
+window.loadRandTextures   = loadRandTextures;
 
 // 消息
 window.showMessage        = showMessage;
@@ -1190,6 +1192,10 @@ window.empty              = empty;
 window.getStorage         = getStorage;
 window.storageGet         = storageGet;
 window.storageSet         = storageSet;
+// 皮肤按角色记忆：每个角色各自记住自己穿第几套
+window.storageGetModelTextures = storageGetModelTextures;
+window.storageSetModelTextures = storageSetModelTextures;
+window.migrateModelTextures    = migrateModelTextures;
 
 // 位置与拖拽
 window.setWaifuLeft       = setWaifuLeft;
