@@ -797,7 +797,7 @@ head('=== ⑨ 皮肤按角色记忆（回归：换一圈角色回来变原皮）
 
     // ---- ⑦ 源码检查：loadOtherModel 不应传皮肤参数 ----
     const libSrc = fs.readFileSync(A('waifu-tips.js'), 'utf8');
-    /loadModel\(newId\)/.test(libSrc)
+    /loadModel\(result\.model\['id'\]\)/.test(libSrc)
         ? ok('loadOtherModel 不传皮肤参数（由 loadModel 自动读该角色的）')
         : bad('loadOtherModel 仍显式传皮肤，会覆盖记录');
 
