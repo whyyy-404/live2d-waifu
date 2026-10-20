@@ -982,7 +982,11 @@ function loadTipsMessage(result) {
     
     var waifu_tips = result.waifu;
     
-    function loadOtherModel() {
+    /**
+     * 换下一个角色。
+     * @param {function} [onChanged] 切换完成后的回调，参数为新角色 id
+     */
+    function loadOtherModel(onChanged) {
         var modelId = modelStorageGetItem('modelId');
         var modelRandMode = live2d_settings.modelRandMode;
         
@@ -991,15 +995,23 @@ function loadTipsMessage(result) {
             url: live2d_settings.modelAPI+modelRandMode+'/?id='+modelId,
             dataType: "json",
             success: function(result) {
-                loadModel(result.model['id']);
+                var newId = result.model['id'];
+                loadModel(newId);
                 var message = result.model['message'];
-                $.each(waifu_tips.model_message, function(i,val) {if (i==result.model['id']) message = getRandText(val)});
+                $.each(waifu_tips.model_message, function(i,val) {if (i==newId) message = getRandText(val)});
                 showMessage(message, 3000, true);
+                if (typeof onChanged === 'function') {
+                    try { onChanged(newId); } catch (e) {}
+                }
             }
         });
     }
     
-    function loadRandTextures() {
+    /**
+     * 换一套皮肤。
+     * @param {function} [onChanged] 切换完成后的回调，参数为 { modelId, texturesId }
+     */
+    function loadRandTextures(onChanged) {
         var modelId = modelStorageGetItem('modelId');
         var modelTexturesId = modelStorageGetItem('modelTexturesId');
         var modelTexturesRandMode = live2d_settings.modelTexturesRandMode;
@@ -1009,10 +1021,14 @@ function loadTipsMessage(result) {
             url: live2d_settings.modelAPI+modelTexturesRandMode+'_textures/?id='+modelId+'-'+modelTexturesId,
             dataType: "json",
             success: function(result) {
-                if (result.textures['id'] == 1 && (modelTexturesId == 1 || modelTexturesId == 0))
+                var newTid = result.textures['id'];
+                if (newTid == 1 && (modelTexturesId == 1 || modelTexturesId == 0))
                     showMessage(waifu_tips.load_rand_textures[0], 3000, true);
                 else showMessage(waifu_tips.load_rand_textures[1], 3000, true);
-                loadModel(modelId, result.textures['id']);
+                loadModel(modelId, newTid);
+                if (typeof onChanged === 'function') {
+                    try { onChanged({ modelId: modelId, texturesId: newTid }); } catch (e) {}
+                }
             }
         });
     }
